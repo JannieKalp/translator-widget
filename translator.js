@@ -4,6 +4,34 @@ if (window.TranslatorWidgetLoaded) return;
 window.TranslatorWidgetLoaded = true;
 
 // =======================
+// BUTTON SENTRAAL CONFIG
+// =======================
+
+const CONFIG = {
+
+    defaultLanguage: "en",
+
+    targetLanguage: "af",
+
+    retryDelay: 300,
+
+    maxRetries: 50,
+
+    startupDelay: 1500,
+
+    buttonText: {
+
+        english: "Afrikaans 🇿🇦",
+
+        afrikaans: "English 🇬🇧",
+
+        loading: "Switching..."
+
+    }
+
+};
+
+// =======================
 // CREATE STYLES
 // =======================
 
@@ -15,8 +43,8 @@ style.textContent = `
     top:20px;
     left:20px;
     z-index:10000;
-    background:#0b7fab;
-    color:#fff;
+    background:#feb81c;
+    color:#000;
     padding:10px 16px;
     border:none;
     border-radius:8px;

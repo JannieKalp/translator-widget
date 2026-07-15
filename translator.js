@@ -13,6 +13,10 @@ const CONFIG = {
 
     targetLanguage: "af",
 
+    buttonTop: 20,
+
+    translatedTop: 70,
+
     retryDelay: 300,
 
     maxRetries: 50,
@@ -40,7 +44,7 @@ const style = document.createElement("style");
 style.textContent = `
 #lang-toggle-btn{
     position:fixed;
-    top:20px;
+    top:${CONFIG.buttonTop}px;
     left:20px;
     z-index:10000;
     background:#feb81c;
@@ -61,13 +65,24 @@ style.textContent = `
 }
 
 .goog-te-banner-frame,
+.goog-te-banner,
 .goog-te-balloon-frame,
-.goog-logo-link{
+.goog-logo-link,
+.skiptranslate iframe{
     display:none !important;
 }
 
 body{
     top:0 !important;
+    position:static !important;
+}
+
+html{
+    margin-top:0 !important;
+}
+
+.skiptranslate{
+    display:inline !important;
 }
 
 .goog-te-gadget{

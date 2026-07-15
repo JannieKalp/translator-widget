@@ -17,15 +17,16 @@
         storageKey: "button-sentraal-language",
 
         button: {
-            id: "lang-toggle-btn",
-            top: 20,
-            left: 20,
-            background: "#feb81c",
-            color: "#000",
-            english: "Afrikaans 🇿🇦",
-            afrikaans: "English 🇬🇧",
-            loading: "Switching..."
-        }
+    id: "lang-toggle-btn",
+    top: 20,
+    translatedTop: 60,
+    left: 20,
+    background: "#feb81c",
+    color: "#000",
+    english: "Afrikaans 🇿🇦",
+    afrikaans: "English 🇬🇧",
+    loading: "Switching..."
+}
 
     };
 
@@ -319,6 +320,25 @@
 
     }
 
+// ==========================================
+// UPDATE BUTTON POSITION
+// ==========================================
+
+function updateButtonPosition() {
+
+    if (!STATE.button) return;
+
+    const translated =
+        document.body.classList.contains("translated-ltr") ||
+        document.body.classList.contains("translated-rtl");
+
+    STATE.button.style.top =
+        translated
+            ? CONFIG.button.translatedTop + "px"
+            : CONFIG.button.top + "px";
+
+}
+
     // ==========================================
     // RESTORE SAVED LANGUAGE
     // ==========================================
@@ -383,22 +403,25 @@
 
     function start() {
 
-        injectStyles();
+    injectStyles();
 
-        createHtml();
+    createHtml();
 
-        loadGoogle();
+    loadGoogle();
 
-        registerEvents();
+    registerEvents();
 
-        // Give Google Translate a moment
-        setTimeout(function () {
+    // Keep the button below the Google banner
+    setInterval(updateButtonPosition, 500);
 
-            restoreLanguage();
+    // Give Google Translate a moment
+    setTimeout(function () {
 
-        }, 1000);
+        restoreLanguage();
 
-    }
+    }, 1000);
+
+}
 
     // ==========================================
     // BOOT

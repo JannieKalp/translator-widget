@@ -18,13 +18,19 @@
 
         button: {
     id: "lang-toggle-btn",
-    top: 20,
-    translatedTop: 60,
+
+    bottom: 20,
+
     left: 20,
+
     background: "#feb81c",
+
     color: "#000",
+
     english: "Afrikaans 🇿🇦",
+
     afrikaans: "English 🇬🇧",
+
     loading: "Switching..."
 }
 
@@ -84,7 +90,7 @@
 
 #${CONFIG.button.id}{
     position:fixed;
-    top:${CONFIG.button.top}px;
+    bottom:${CONFIG.button.bottom}px;
     left:${CONFIG.button.left}px;
     z-index:999999;
 
@@ -320,24 +326,7 @@
 
     }
 
-// ==========================================
-// UPDATE BUTTON POSITION
-// ==========================================
 
-function updateButtonPosition() {
-
-    if (!STATE.button) return;
-
-    const translated =
-        document.body.classList.contains("translated-ltr") ||
-        document.body.classList.contains("translated-rtl");
-
-    STATE.button.style.top =
-        translated
-            ? CONFIG.button.translatedTop + "px"
-            : CONFIG.button.top + "px";
-
-}
 
     // ==========================================
     // RESTORE SAVED LANGUAGE

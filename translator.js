@@ -12,66 +12,32 @@
     const CONFIG = {
 
         pageLanguage: "en",
+
         targetLanguage: "af",
 
         storageKey: "button-sentraal-language",
 
         button: {
-    id: "lang-toggle-btn",
 
-    bottom: 20,
+            id: "lang-toggle-btn",
 
-    left: 20,
+            bottom: 20,
 
-    background: "#feb81c",
+            left: 20,
 
-    color: "#000",
+            background: "#feb81c",
 
-    english: "Afrikaans 🇿🇦",
+            color: "#000",
 
-    afrikaans: "English 🇬🇧",
+            english: "Afrikaans 🇿🇦",
 
-    loading: "Switching..."
-}
+            afrikaans: "English 🇬🇧",
 
-    };
-
-    // ==========================================
-    // STATE
-    // ==========================================
-
-    const STATE = {
-
-        currentLanguage:
-            localStorage.getItem(CONFIG.storageKey) || "en",
-
-        button: null,
-
-        translateContainer: null
-
-    };
-
-    // ==========================================
-    // WAIT FOR DOM
-    // ==========================================
-
-    function ready(callback) {
-
-        if (document.readyState === "loading") {
-
-            document.addEventListener(
-                "DOMContentLoaded",
-                callback,
-                { once: true }
-            );
-
-            return;
+            loading: "Switching..."
 
         }
 
-        callback();
-
-    }
+    };
 
     // ==========================================
     // CREATE CSS
@@ -88,22 +54,31 @@
 
         style.textContent = `
 
+
 #${CONFIG.button.id}{
+
     position:fixed;
+
     bottom:${CONFIG.button.bottom}px;
+
     left:${CONFIG.button.left}px;
+
     z-index:999999;
 
     background:${CONFIG.button.background};
+
     color:${CONFIG.button.color};
 
     border:none;
+
     border-radius:8px;
 
     padding:10px 16px;
 
     font-size:13px;
+
     font-weight:600;
+
     font-family:Arial,Helvetica,sans-serif;
 
     cursor:pointer;
@@ -111,32 +86,51 @@
     box-shadow:0 6px 18px rgba(0,0,0,.2);
 
     transition:.25s;
+
 }
 
 #${CONFIG.button.id}:hover{
+
     transform:translateY(-2px);
+
 }
 
 #google_translate_element{
+
     display:none;
+
+}
+
+.goog-te-banner-frame,
+.goog-te-balloon-frame,
+.goog-logo-link{
+
+    display:none!important;
+
+}
+
+body{
+
+    top:0!important;
+
 }
 
 .goog-te-gadget{
+
     font-size:0!important;
-}
 
-.goog-logo-link{
-    display:none!important;
-}
+    color:transparent!important;
 
-.goog-te-gadget span{
-    display:none!important;
 }
 
 .goog-te-combo{
+
     opacity:0;
+
     position:absolute;
+
     pointer-events:none;
+
 }
 
 `;
@@ -144,57 +138,45 @@
         document.head.appendChild(style);
 
     }
+// ==========================================
+// CREATE HTML
+// ==========================================
 
-    // ==========================================
-    // CREATE HTML
-    // ==========================================
+function createHtml() {
 
-    function createHtml() {
+    if (!document.body)
+        return;
 
-        if (!document.body) return;
+    if (!document.getElementById("google_translate_element")) {
 
-        if (!document.getElementById("google_translate_element")) {
+        const translate =
+            document.createElement("div");
 
-            STATE.translateContainer =
-                document.createElement("div");
+        translate.id =
+            "google_translate_element";
 
-            STATE.translateContainer.id =
-                "google_translate_element";
-
-            document.body.appendChild(
-                STATE.translateContainer
-            );
-
-        }
-
-        if (!document.getElementById(CONFIG.button.id)) {
-
-            STATE.button =
-                document.createElement("button");
-
-            STATE.button.id =
-                CONFIG.button.id;
-
-            STATE.button.textContent =
-                STATE.currentLanguage === "af"
-                ? CONFIG.button.afrikaans
-                : CONFIG.button.english;
-
-            document.body.appendChild(
-                STATE.button
-            );
-
-        } else {
-
-            STATE.button =
-                document.getElementById(CONFIG.button.id);
-
-        }
+        document.body.appendChild(translate);
 
     }
 
+    if (!document.getElementById(CONFIG.button.id)) {
+
+        const button =
+            document.createElement("button");
+
+        button.id =
+            CONFIG.button.id;
+
+        button.textContent =
+            CONFIG.button.english;
+
+        document.body.appendChild(button);
+
+    }
+
+}
     // ==========================================
-    // GOOGLE TRANSLATE CALLBACK
+    // GOOGLE TRANSLATE
     // ==========================================
 
     window.googleTranslateElementInit = function () {
@@ -212,8 +194,7 @@
         }, "google_translate_element");
 
     };
-
-    // ==========================================
+        // ==========================================
     // LOAD GOOGLE SCRIPT
     // ==========================================
 
@@ -222,8 +203,7 @@
         if (document.getElementById("bs-google-script"))
             return;
 
-        const script =
-            document.createElement("script");
+        const script = document.createElement("script");
 
         script.id = "bs-google-script";
 
@@ -233,160 +213,104 @@
         document.head.appendChild(script);
 
     }
-        // ==========================================
-    // WAIT FOR GOOGLE TRANSLATE
+    // ==========================================
+    // CHANGE LANGUAGE
     // ==========================================
 
-    function waitForTranslate(callback) {
+    function setLang(lang, callback) {
 
         let attempts = 0;
 
-        function check() {
+        function trySet() {
 
-            const combo =
+            const select =
                 document.querySelector(".goog-te-combo");
 
-            if (combo) {
+            if (select) {
 
-                callback(combo);
-                return;
+                select.value = lang;
 
-            }
+                select.dispatchEvent(
+                    new Event("change")
+                );
 
-            attempts++;
+                if (callback)
+                    callback();
 
-            if (attempts < 50) {
+            } else if (attempts < 50) {
 
-                setTimeout(check, 300);
+                attempts++;
 
-            } else {
-
-                console.warn(
-                    "Button Sentraal: Google Translate did not initialise."
+                setTimeout(
+                    trySet,
+                    300
                 );
 
             }
 
         }
 
-        check();
+        trySet();
 
     }
-
-    // ==========================================
-    // CHANGE LANGUAGE
-    // ==========================================
-
-    function setLanguage(language, callback) {
-
-        waitForTranslate(function (combo) {
-
-            combo.value = language;
-
-            combo.dispatchEvent(
-                new Event("change")
-            );
-
-            STATE.currentLanguage = language;
-
-            localStorage.setItem(
-                CONFIG.storageKey,
-                language
-            );
-
-            updateButton();
-
-            if (callback) {
-                callback();
-            }
-
-        });
-
-    }
-
-    // ==========================================
-    // UPDATE BUTTON
-    // ==========================================
-
-    function updateButton() {
-
-        if (!STATE.button) return;
-
-        if (STATE.currentLanguage === "af") {
-
-            STATE.button.textContent =
-                CONFIG.button.afrikaans;
-
-        } else {
-
-            STATE.button.textContent =
-                CONFIG.button.english;
-
-        }
-
-    }
-
-
-
-    // ==========================================
-    // RESTORE SAVED LANGUAGE
-    // ==========================================
-
-    function restoreLanguage() {
-
-        if (STATE.currentLanguage !== "af")
-            return;
-
-        setLanguage("af");
-
-    }
-
-    // ==========================================
+        // ==========================================
     // BUTTON EVENTS
     // ==========================================
 
     function registerEvents() {
 
-        STATE.button.addEventListener(
-            "click",
-            function () {
+        const button =
+            document.getElementById(CONFIG.button.id);
 
-                STATE.button.textContent =
-                    CONFIG.button.loading;
+        if (!button)
+            return;
 
-                if (STATE.currentLanguage === "en") {
+        let lang =
+            localStorage.getItem(CONFIG.storageKey) || "en";
 
-                    setLanguage("af");
+        if (lang === "af") {
 
-                } else {
+            button.textContent =
+                CONFIG.button.afrikaans;
 
-                    waitForTranslate(function (combo) {
+        }
 
-                        combo.value = "en";
+        button.addEventListener("click", function () {
 
-                        combo.dispatchEvent(
-                            new Event("change")
-                        );
+            button.textContent =
+                CONFIG.button.loading;
 
-                        STATE.currentLanguage = "en";
+            if (lang === "en") {
 
-                        localStorage.setItem(
-                            CONFIG.storageKey,
-                            "en"
-                        );
+                setLang("af", function () {
 
-                        updateButton();
+                    lang = "af";
 
-                    });
+                    localStorage.setItem(
+                        CONFIG.storageKey,
+                        "af"
+                    );
 
-                }
+                    button.textContent =
+                        CONFIG.button.afrikaans;
+
+                });
+
+            } else {
+
+                localStorage.setItem(
+                    CONFIG.storageKey,
+                    "en"
+                );
+
+                location.reload();
 
             }
-        );
+
+        });
 
     }
-
-    // ==========================================
+        // ==========================================
     // START
     // ==========================================
 
@@ -398,24 +322,51 @@
 
     loadGoogle();
 
-    registerEvents();
+    const lang =
+        localStorage.getItem(CONFIG.storageKey) || "en";
 
-    // Keep the button below the Google banner
-    setInterval(updateButtonPosition, 500);
-
-    // Give Google Translate a moment
     setTimeout(function () {
 
-        restoreLanguage();
+        const button =
+            document.getElementById(CONFIG.button.id);
 
-    }, 1000);
+        if (!button)
+            return;
+
+        if (lang === "af") {
+
+            setLang("af");
+
+            button.textContent =
+                CONFIG.button.afrikaans;
+
+        } else {
+
+            button.textContent =
+                CONFIG.button.english;
+
+        }
+
+        registerEvents();
+
+    }, 1500);
 
 }
-
-    // ==========================================
+        // ==========================================
     // BOOT
     // ==========================================
 
-    ready(start);
+    if (document.readyState === "loading") {
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            start
+        );
+
+    } else {
+
+        start();
+
+    }
 
 })();

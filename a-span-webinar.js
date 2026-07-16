@@ -11,23 +11,23 @@
 
     const CONFIG = {
 
-        webinarUrl:
-            "https://weeklikse-webinar.systeme.io/webinar",
+    webinarUrl:
+        "https://weeklikse-webinar.systeme.io/webinar",
 
-        imageUrl:
-            "https://d1yei2z3i6k35z.cloudfront.net/5437503/6a4e9b10d0b2a4.40735979_a-span-weeklikse-webinar11.png",
+    imageUrl:
+        "https://d1yei2z3i6k35z.cloudfront.net/5437503/6a58b7379ea7f9.10929008_a-span-weeklikse-webinar22.png",
 
-        buttonId: "weekly-webinar-btn",
+    buttonId: "weekly-webinar-btn",
 
-        bottom: 48,
+    bottom: 48,
 
-        right: 12,
+    right: 12,
 
-        desktopWidth: 140,
+    desktopWidth: 140,
 
-        mobileWidth: 120
+    mobileWidth: 120
 
-    };
+};
 
     // ==========================================
     // CREATE CSS

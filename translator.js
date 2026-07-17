@@ -5,7 +5,9 @@
     // PREVENT LOADING TWICE
     // ==========================================
 
-    if (window.ButtonSentraalTranslator) return;
+    if (window.ButtonSentraalTranslator)
+        return;
+
     window.ButtonSentraalTranslator = true;
 
     // ==========================================
@@ -17,6 +19,8 @@
         pageLanguage: "en",
 
         includedLanguages: "en,es,af",
+
+        defaultLanguage: "af",
 
         storageKey: "button-sentraal-language",
 
@@ -63,9 +67,11 @@
         if (document.getElementById("bs-translator-style"))
             return;
 
-        const style = document.createElement("style");
+        const style =
+            document.createElement("style");
 
-        style.id = "bs-translator-style";
+        style.id =
+            "bs-translator-style";
 
         style.textContent = `
 
@@ -208,57 +214,61 @@ body{
 
     function createHtml() {
 
-        // -------------------------------
-        // Hidden Google Translate Container
-        // -------------------------------
+        // Hidden Google Translate container
 
         if (!document.getElementById(CONFIG.googleContainer)) {
 
-            const google = document.createElement("div");
+            const google =
+                document.createElement("div");
 
-            google.id = CONFIG.googleContainer;
+            google.id =
+                CONFIG.googleContainer;
 
             document.body.appendChild(google);
 
         }
 
-        // -------------------------------
-        // Create Spanish Buttons
-        // -------------------------------
+        // Create Spanish buttons
 
-        document.querySelectorAll(".bs-translator").forEach(function (container) {
+        document
+            .querySelectorAll(".bs-translator")
+            .forEach(function (container) {
 
-            if (container.querySelector(".bs-spanish-btn"))
-                return;
+                if (container.querySelector(".bs-spanish-btn"))
+                    return;
 
-            const button = document.createElement("button");
+                const button =
+                    document.createElement("button");
 
-            button.className = "bs-spanish-btn";
+                button.className =
+                    "bs-spanish-btn";
 
-            button.type = "button";
+                button.type =
+                    "button";
 
-            button.innerHTML = `
-                <span>🌐</span>
-                <span class="bs-spanish-text">
-                    ${CONFIG.spanishButton.text}
-                </span>
-            `;
+                button.innerHTML = `
+                    <span>🌐</span>
+                    <span class="bs-spanish-text">
+                        ${CONFIG.spanishButton.text}
+                    </span>
+                `;
 
-            container.appendChild(button);
+                container.appendChild(button);
 
-        });
+            });
 
-        // -------------------------------
-        // Create Afrikaans Floating Button
-        // -------------------------------
+        // Create Afrikaans floating button
 
         if (!document.getElementById(CONFIG.afrikaansButton.id)) {
 
-            const button = document.createElement("button");
+            const button =
+                document.createElement("button");
 
-            button.id = CONFIG.afrikaansButton.id;
+            button.id =
+                CONFIG.afrikaansButton.id;
 
-            button.type = "button";
+            button.type =
+                "button";
 
             button.innerHTML = `
                 <span>🌐</span>
@@ -282,9 +292,11 @@ body{
         if (document.getElementById("bs-google-script"))
             return;
 
-        const script = document.createElement("script");
+        const script =
+            document.createElement("script");
 
-        script.id = "bs-google-script";
+        script.id =
+            "bs-google-script";
 
         script.src =
             "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
@@ -297,22 +309,25 @@ body{
     // GOOGLE CALLBACK
     // ==========================================
 
-    window.googleTranslateElementInit = function () {
+    window.googleTranslateElementInit =
+        function () {
 
-        new google.translate.TranslateElement({
+            new google.translate.TranslateElement({
 
-            pageLanguage: CONFIG.pageLanguage,
+                pageLanguage:
+                    CONFIG.pageLanguage,
 
-            includedLanguages: CONFIG.includedLanguages,
+                includedLanguages:
+                    CONFIG.includedLanguages,
 
-            autoDisplay: false,
+                autoDisplay: false,
 
-            multilanguagePage: false
+                multilanguagePage: false
 
-        }, CONFIG.googleContainer);
+            }, CONFIG.googleContainer);
 
-    };
-        // ==========================================
+        };
+            // ==========================================
     // CHANGE LANGUAGE
     // ==========================================
 
@@ -336,9 +351,13 @@ body{
                 if (callback)
                     callback();
 
-            } else if (attempts < 50) {
+                return;
 
-                attempts++;
+            }
+
+            attempts++;
+
+            if (attempts < 50) {
 
                 setTimeout(
                     trySet,
@@ -359,7 +378,8 @@ body{
 
     function registerSpanishButtons() {
 
-        document.querySelectorAll(".bs-spanish-btn")
+        document
+            .querySelectorAll(".bs-spanish-btn")
             .forEach(function (button) {
 
                 const text =
@@ -368,25 +388,12 @@ body{
                 button.addEventListener("click", function () {
 
                     let lang =
-                        localStorage.getItem(CONFIG.storageKey) || "en";
+                        localStorage.getItem(CONFIG.storageKey);
 
-                    text.textContent = "Switching...";
+                    text.textContent =
+                        "Switching...";
 
-                    if (lang !== "es") {
-
-                        setLanguage("es", function () {
-
-                            localStorage.setItem(
-                                CONFIG.storageKey,
-                                "es"
-                            );
-
-                            text.textContent =
-                                CONFIG.spanishButton.active;
-
-                        });
-
-                    } else {
+                    if (lang === "es") {
 
                         setLanguage("en", function () {
 
@@ -397,6 +404,20 @@ body{
 
                             text.textContent =
                                 CONFIG.spanishButton.text;
+
+                        });
+
+                    } else {
+
+                        setLanguage("es", function () {
+
+                            localStorage.setItem(
+                                CONFIG.storageKey,
+                                "es"
+                            );
+
+                            text.textContent =
+                                CONFIG.spanishButton.active;
 
                         });
 
@@ -430,26 +451,12 @@ body{
         button.addEventListener("click", function () {
 
             let lang =
-                localStorage.getItem(CONFIG.storageKey) || "en";
+                localStorage.getItem(CONFIG.storageKey);
 
             text.textContent =
                 "Switching...";
 
-            if (lang !== "af") {
-
-                setLanguage("af", function () {
-
-                    localStorage.setItem(
-                        CONFIG.storageKey,
-                        "af"
-                    );
-
-                    text.textContent =
-                        CONFIG.afrikaansButton.active;
-
-                });
-
-            } else {
+            if (lang === "af") {
 
                 setLanguage("en", function () {
 
@@ -460,6 +467,20 @@ body{
 
                     text.textContent =
                         CONFIG.afrikaansButton.text;
+
+                });
+
+            } else {
+
+                setLanguage("af", function () {
+
+                    localStorage.setItem(
+                        CONFIG.storageKey,
+                        "af"
+                    );
+
+                    text.textContent =
+                        CONFIG.afrikaansButton.active;
 
                 });
 
@@ -474,8 +495,22 @@ body{
 
     function restoreLanguage() {
 
-        const lang =
-            localStorage.getItem(CONFIG.storageKey) || "en";
+        let lang =
+            localStorage.getItem(CONFIG.storageKey);
+
+        // First visit defaults to Afrikaans
+
+        if (!lang) {
+
+            lang =
+                CONFIG.defaultLanguage;
+
+            localStorage.setItem(
+                CONFIG.storageKey,
+                lang
+            );
+
+        }
 
         setTimeout(function () {
 
@@ -483,7 +518,8 @@ body{
 
                 setLanguage("es");
 
-                document.querySelectorAll(".bs-spanish-text")
+                document
+                    .querySelectorAll(".bs-spanish-text")
                     .forEach(function (text) {
 
                         text.textContent =

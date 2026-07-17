@@ -16,37 +16,39 @@
 
         pageLanguage: "en",
 
-        targetLanguage: "af",
+        includedLanguages: "en,es,af",
 
         storageKey: "button-sentraal-language",
 
-        googleContainer: "google_translate_element",
+        googleContainer: "button-sentraal-google",
 
-        button: {
+        spanishButton: {
 
-            id: "lang-toggle-btn",
+            text: "🇪🇸 Watch in Spanish",
 
-            bottom: 20,
+            active: "🇬🇧 View in English",
 
-            left: 20,
+            background: "#0b7fab",
+
+            color: "#ffffff"
+
+        },
+
+        afrikaansButton: {
+
+            id: "bs-afrikaans-btn",
+
+            text: "🇿🇦 Afrikaans",
+
+            active: "🇬🇧 English",
 
             background: "#feb81c",
 
             color: "#000000",
 
-            font: "Arial, Helvetica, sans-serif",
+            bottom: 20,
 
-            borderRadius: 8,
-
-            paddingY: 10,
-
-            paddingX: 16,
-
-            english: "Afrikaans 🇿🇦",
-
-            afrikaans: "English 🇬🇧",
-
-            loading: "Switching..."
+            left: 20
 
         }
 
@@ -67,6 +69,10 @@
 
         style.textContent = `
 
+/* =====================================
+   HIDE GOOGLE TRANSLATE
+===================================== */
+
 #${CONFIG.googleContainer}{
 
     position:absolute!important;
@@ -79,11 +85,9 @@
 
 }
 
-.goog-te-gadget,
-.goog-te-gadget-simple,
-.goog-te-combo,
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
+.goog-logo-link,
 .goog-tooltip,
 .goog-text-highlight{
 
@@ -97,19 +101,61 @@ body{
 
 }
 
-iframe.goog-te-banner-frame{
+/* =====================================
+   SPANISH BUTTON
+===================================== */
 
-    display:none!important;
+.bs-spanish-btn{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+    background:${CONFIG.spanishButton.background};
+
+    color:${CONFIG.spanishButton.color};
+
+    padding:16px 24px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    font-size:16px;
+
+    font-weight:600;
+
+    text-decoration:none;
+
+    box-sizing:border-box;
 
 }
 
-#${CONFIG.button.id}{
+.bs-spanish-btn:hover{
+
+    opacity:.95;
+
+}
+
+/* =====================================
+   AFRIKAANS BUTTON
+===================================== */
+
+#${CONFIG.afrikaansButton.id}{
 
     position:fixed;
 
-    bottom:${CONFIG.button.bottom}px;
+    bottom:${CONFIG.afrikaansButton.bottom}px;
 
-    left:${CONFIG.button.left}px;
+    left:${CONFIG.afrikaansButton.left}px;
 
     z-index:999999;
 
@@ -121,19 +167,19 @@ iframe.goog-te-banner-frame{
 
     gap:8px;
 
-    background:${CONFIG.button.background};
+    background:${CONFIG.afrikaansButton.background};
 
-    color:${CONFIG.button.color};
+    color:${CONFIG.afrikaansButton.color};
 
-    padding:${CONFIG.button.paddingY}px ${CONFIG.button.paddingX}px;
+    padding:10px 16px;
 
     border:none;
 
-    border-radius:${CONFIG.button.borderRadius}px;
+    border-radius:8px;
 
     cursor:pointer;
 
-    font-family:${CONFIG.button.font};
+    font-family:Arial, Helvetica, sans-serif;
 
     font-size:14px;
 
@@ -145,7 +191,7 @@ iframe.goog-te-banner-frame{
 
 }
 
-#${CONFIG.button.id}:hover{
+#${CONFIG.afrikaansButton.id}:hover{
 
     transform:translateY(-2px);
 
@@ -162,26 +208,64 @@ iframe.goog-te-banner-frame{
 
     function createHtml() {
 
+        // -------------------------------
+        // Hidden Google Translate Container
+        // -------------------------------
+
         if (!document.getElementById(CONFIG.googleContainer)) {
 
-            const div = document.createElement("div");
+            const google = document.createElement("div");
 
-            div.id = CONFIG.googleContainer;
+            google.id = CONFIG.googleContainer;
 
-            document.body.appendChild(div);
+            document.body.appendChild(google);
 
         }
 
-        if (!document.getElementById(CONFIG.button.id)) {
+        // -------------------------------
+        // Create Spanish Buttons
+        // -------------------------------
+
+        document.querySelectorAll(".bs-translator").forEach(function (container) {
+
+            if (container.querySelector(".bs-spanish-btn"))
+                return;
 
             const button = document.createElement("button");
 
-            button.id = CONFIG.button.id;
+            button.className = "bs-spanish-btn";
 
             button.type = "button";
 
-            button.innerHTML =
-                `<span>🌐</span><span id="bs-language-text">${CONFIG.button.english}</span>`;
+            button.innerHTML = `
+                <span>🌐</span>
+                <span class="bs-spanish-text">
+                    ${CONFIG.spanishButton.text}
+                </span>
+            `;
+
+            container.appendChild(button);
+
+        });
+
+        // -------------------------------
+        // Create Afrikaans Floating Button
+        // -------------------------------
+
+        if (!document.getElementById(CONFIG.afrikaansButton.id)) {
+
+            const button = document.createElement("button");
+
+            button.id = CONFIG.afrikaansButton.id;
+
+            button.type = "button";
+
+            button.innerHTML = `
+                <span>🌐</span>
+                <span id="bs-afrikaans-text">
+                    ${CONFIG.afrikaansButton.text}
+                </span>
+            `;
 
             document.body.appendChild(button);
 
@@ -195,12 +279,12 @@ iframe.goog-te-banner-frame{
 
     function loadGoogleTranslate() {
 
-        if (document.getElementById("bs-google-translate"))
+        if (document.getElementById("bs-google-script"))
             return;
 
         const script = document.createElement("script");
 
-        script.id = "bs-google-translate";
+        script.id = "bs-google-script";
 
         script.src =
             "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
@@ -219,8 +303,7 @@ iframe.goog-te-banner-frame{
 
             pageLanguage: CONFIG.pageLanguage,
 
-            includedLanguages:
-                CONFIG.targetLanguage,
+            includedLanguages: CONFIG.includedLanguages,
 
             autoDisplay: false,
 
@@ -233,13 +316,11 @@ iframe.goog-te-banner-frame{
     // CHANGE LANGUAGE
     // ==========================================
 
-    function setLanguage(lang, done) {
+    function setLanguage(lang, callback) {
 
-        let tries = 0;
+        let attempts = 0;
 
-        const maxTries = 40;
-
-        const interval = setInterval(function () {
+        function trySet() {
 
             const select =
                 document.querySelector(".goog-te-combo");
@@ -252,79 +333,111 @@ iframe.goog-te-banner-frame{
                     new Event("change")
                 );
 
-                clearInterval(interval);
+                if (callback)
+                    callback();
 
-                if (done)
-                    done();
+            } else if (attempts < 50) {
 
-            }
+                attempts++;
 
-            tries++;
-
-            if (tries >= maxTries) {
-
-                clearInterval(interval);
-
-                console.log(
-                    "Button Sentraal: Google Translate not ready."
+                setTimeout(
+                    trySet,
+                    300
                 );
 
             }
 
-        }, 400);
+        }
+
+        trySet();
 
     }
 
     // ==========================================
-    // BUTTON EVENTS
+    // SPANISH BUTTON EVENTS
     // ==========================================
 
-    function registerEvents() {
+    function registerSpanishButtons() {
+
+        document.querySelectorAll(".bs-spanish-btn")
+            .forEach(function (button) {
+
+                const text =
+                    button.querySelector(".bs-spanish-text");
+
+                button.addEventListener("click", function () {
+
+                    let lang =
+                        localStorage.getItem(CONFIG.storageKey) || "en";
+
+                    text.textContent = "Switching...";
+
+                    if (lang !== "es") {
+
+                        setLanguage("es", function () {
+
+                            localStorage.setItem(
+                                CONFIG.storageKey,
+                                "es"
+                            );
+
+                            text.textContent =
+                                CONFIG.spanishButton.active;
+
+                        });
+
+                    } else {
+
+                        setLanguage("en", function () {
+
+                            localStorage.setItem(
+                                CONFIG.storageKey,
+                                "en"
+                            );
+
+                            text.textContent =
+                                CONFIG.spanishButton.text;
+
+                        });
+
+                    }
+
+                });
+
+            });
+
+    }
+
+    // ==========================================
+    // AFRIKAANS BUTTON EVENTS
+    // ==========================================
+
+    function registerAfrikaansButton() {
 
         const button =
-            document.getElementById(CONFIG.button.id);
+            document.getElementById(
+                CONFIG.afrikaansButton.id
+            );
 
-        const text =
-            document.getElementById("bs-language-text");
-
-        if (!button || !text)
+        if (!button)
             return;
 
-        let currentLang =
-            localStorage.getItem(CONFIG.storageKey) || "en";
+        const text =
+            document.getElementById(
+                "bs-afrikaans-text"
+            );
 
-        // Restore previous language
+        button.addEventListener("click", function () {
 
-        setTimeout(function () {
-
-            if (currentLang === "af") {
-
-                setLanguage("af");
-
-                text.textContent =
-                    CONFIG.button.afrikaans;
-
-            } else {
-
-                text.textContent =
-                    CONFIG.button.english;
-
-            }
-
-        }, 1500);
-
-        button.addEventListener("click", function (e) {
-
-            e.preventDefault();
+            let lang =
+                localStorage.getItem(CONFIG.storageKey) || "en";
 
             text.textContent =
-                CONFIG.button.loading;
+                "Switching...";
 
-            if (currentLang === "en") {
+            if (lang !== "af") {
 
                 setLanguage("af", function () {
-
-                    currentLang = "af";
 
                     localStorage.setItem(
                         CONFIG.storageKey,
@@ -332,18 +445,23 @@ iframe.goog-te-banner-frame{
                     );
 
                     text.textContent =
-                        CONFIG.button.afrikaans;
+                        CONFIG.afrikaansButton.active;
 
                 });
 
             } else {
 
-                localStorage.setItem(
-                    CONFIG.storageKey,
-                    "en"
-                );
+                setLanguage("en", function () {
 
-                location.reload();
+                    localStorage.setItem(
+                        CONFIG.storageKey,
+                        "en"
+                    );
+
+                    text.textContent =
+                        CONFIG.afrikaansButton.text;
+
+                });
 
             }
 
@@ -351,6 +469,53 @@ iframe.goog-te-banner-frame{
 
     }
         // ==========================================
+    // RESTORE PREVIOUS LANGUAGE
+    // ==========================================
+
+    function restoreLanguage() {
+
+        const lang =
+            localStorage.getItem(CONFIG.storageKey) || "en";
+
+        setTimeout(function () {
+
+            if (lang === "es") {
+
+                setLanguage("es");
+
+                document.querySelectorAll(".bs-spanish-text")
+                    .forEach(function (text) {
+
+                        text.textContent =
+                            CONFIG.spanishButton.active;
+
+                    });
+
+            }
+
+            if (lang === "af") {
+
+                setLanguage("af");
+
+                const text =
+                    document.getElementById(
+                        "bs-afrikaans-text"
+                    );
+
+                if (text) {
+
+                    text.textContent =
+                        CONFIG.afrikaansButton.active;
+
+                }
+
+            }
+
+        }, 1500);
+
+    }
+
+    // ==========================================
     // START
     // ==========================================
 
@@ -362,7 +527,11 @@ iframe.goog-te-banner-frame{
 
         loadGoogleTranslate();
 
-        registerEvents();
+        registerSpanishButtons();
+
+        registerAfrikaansButton();
+
+        restoreLanguage();
 
     }
 

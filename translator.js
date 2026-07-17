@@ -1,7 +1,10 @@
 (function () {
     "use strict";
 
-    // Prevent loading twice
+    // ==========================================
+    // PREVENT LOADING TWICE
+    // ==========================================
+
     if (window.ButtonSentraalTranslator) return;
     window.ButtonSentraalTranslator = true;
 
@@ -17,6 +20,8 @@
 
         storageKey: "button-sentraal-language",
 
+        googleContainer: "google_translate_element",
+
         button: {
 
             id: "lang-toggle-btn",
@@ -27,7 +32,15 @@
 
             background: "#feb81c",
 
-            color: "#000",
+            color: "#000000",
+
+            font: "Arial, Helvetica, sans-serif",
+
+            borderRadius: 8,
+
+            paddingY: 10,
+
+            paddingX: 16,
 
             english: "Afrikaans 🇿🇦",
 
@@ -54,56 +67,25 @@
 
         style.textContent = `
 
+#${CONFIG.googleContainer}{
 
-#${CONFIG.button.id}{
+    position:absolute!important;
 
-    position:fixed;
+    left:-9999px!important;
 
-    bottom:${CONFIG.button.bottom}px;
+    top:-9999px!important;
 
-    left:${CONFIG.button.left}px;
-
-    z-index:999999;
-
-    background:${CONFIG.button.background};
-
-    color:${CONFIG.button.color};
-
-    border:none;
-
-    border-radius:8px;
-
-    padding:10px 16px;
-
-    font-size:13px;
-
-    font-weight:600;
-
-    font-family:Arial,Helvetica,sans-serif;
-
-    cursor:pointer;
-
-    box-shadow:0 6px 18px rgba(0,0,0,.2);
-
-    transition:.25s;
+    visibility:hidden!important;
 
 }
 
-#${CONFIG.button.id}:hover{
-
-    transform:translateY(-2px);
-
-}
-
-#google_translate_element{
-
-    display:none;
-
-}
-
+.goog-te-gadget,
+.goog-te-gadget-simple,
+.goog-te-combo,
 .goog-te-banner-frame,
 .goog-te-balloon-frame,
-.goog-logo-link{
+.goog-tooltip,
+.goog-text-highlight{
 
     display:none!important;
 
@@ -115,21 +97,57 @@ body{
 
 }
 
-.goog-te-gadget{
+iframe.goog-te-banner-frame{
 
-    font-size:0!important;
-
-    color:transparent!important;
+    display:none!important;
 
 }
 
-.goog-te-combo{
+#${CONFIG.button.id}{
 
-    opacity:0;
+    position:fixed;
 
-    position:absolute;
+    bottom:${CONFIG.button.bottom}px;
 
-    pointer-events:none;
+    left:${CONFIG.button.left}px;
+
+    z-index:999999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:8px;
+
+    background:${CONFIG.button.background};
+
+    color:${CONFIG.button.color};
+
+    padding:${CONFIG.button.paddingY}px ${CONFIG.button.paddingX}px;
+
+    border:none;
+
+    border-radius:${CONFIG.button.borderRadius}px;
+
+    cursor:pointer;
+
+    font-family:${CONFIG.button.font};
+
+    font-size:14px;
+
+    font-weight:600;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.20);
+
+    transition:.25s;
+
+}
+
+#${CONFIG.button.id}:hover{
+
+    transform:translateY(-2px);
 
 }
 
@@ -138,45 +156,61 @@ body{
         document.head.appendChild(style);
 
     }
-// ==========================================
-// CREATE HTML
-// ==========================================
-
-function createHtml() {
-
-    if (!document.body)
-        return;
-
-    if (!document.getElementById("google_translate_element")) {
-
-        const translate =
-            document.createElement("div");
-
-        translate.id =
-            "google_translate_element";
-
-        document.body.appendChild(translate);
-
-    }
-
-    if (!document.getElementById(CONFIG.button.id)) {
-
-        const button =
-            document.createElement("button");
-
-        button.id =
-            CONFIG.button.id;
-
-        button.textContent =
-            CONFIG.button.english;
-
-        document.body.appendChild(button);
-
-    }
-
-}
+        // ==========================================
+    // CREATE HTML
     // ==========================================
-    // GOOGLE TRANSLATE
+
+    function createHtml() {
+
+        if (!document.getElementById(CONFIG.googleContainer)) {
+
+            const div = document.createElement("div");
+
+            div.id = CONFIG.googleContainer;
+
+            document.body.appendChild(div);
+
+        }
+
+        if (!document.getElementById(CONFIG.button.id)) {
+
+            const button = document.createElement("button");
+
+            button.id = CONFIG.button.id;
+
+            button.type = "button";
+
+            button.innerHTML =
+                `<span>🌐</span><span id="bs-language-text">${CONFIG.button.english}</span>`;
+
+            document.body.appendChild(button);
+
+        }
+
+    }
+
+    // ==========================================
+    // LOAD GOOGLE TRANSLATE
+    // ==========================================
+
+    function loadGoogleTranslate() {
+
+        if (document.getElementById("bs-google-translate"))
+            return;
+
+        const script = document.createElement("script");
+
+        script.id = "bs-google-translate";
+
+        script.src =
+            "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+
+        document.head.appendChild(script);
+
+    }
+
+    // ==========================================
+    // GOOGLE CALLBACK
     // ==========================================
 
     window.googleTranslateElementInit = function () {
@@ -185,43 +219,27 @@ function createHtml() {
 
             pageLanguage: CONFIG.pageLanguage,
 
-            includedLanguages: CONFIG.targetLanguage,
+            includedLanguages:
+                CONFIG.targetLanguage,
 
             autoDisplay: false,
 
             multilanguagePage: false
 
-        }, "google_translate_element");
+        }, CONFIG.googleContainer);
 
     };
         // ==========================================
-    // LOAD GOOGLE SCRIPT
-    // ==========================================
-
-    function loadGoogle() {
-
-        if (document.getElementById("bs-google-script"))
-            return;
-
-        const script = document.createElement("script");
-
-        script.id = "bs-google-script";
-
-        script.src =
-            "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
-
-        document.head.appendChild(script);
-
-    }
-    // ==========================================
     // CHANGE LANGUAGE
     // ==========================================
 
-    function setLang(lang, callback) {
+    function setLanguage(lang, done) {
 
-        let attempts = 0;
+        let tries = 0;
 
-        function trySet() {
+        const maxTries = 40;
+
+        const interval = setInterval(function () {
 
             const select =
                 document.querySelector(".goog-te-combo");
@@ -234,26 +252,30 @@ function createHtml() {
                     new Event("change")
                 );
 
-                if (callback)
-                    callback();
+                clearInterval(interval);
 
-            } else if (attempts < 50) {
+                if (done)
+                    done();
 
-                attempts++;
+            }
 
-                setTimeout(
-                    trySet,
-                    300
+            tries++;
+
+            if (tries >= maxTries) {
+
+                clearInterval(interval);
+
+                console.log(
+                    "Button Sentraal: Google Translate not ready."
                 );
 
             }
 
-        }
-
-        trySet();
+        }, 400);
 
     }
-        // ==========================================
+
+    // ==========================================
     // BUTTON EVENTS
     // ==========================================
 
@@ -262,36 +284,54 @@ function createHtml() {
         const button =
             document.getElementById(CONFIG.button.id);
 
-        if (!button)
+        const text =
+            document.getElementById("bs-language-text");
+
+        if (!button || !text)
             return;
 
-        let lang =
+        let currentLang =
             localStorage.getItem(CONFIG.storageKey) || "en";
 
-        if (lang === "af") {
+        // Restore previous language
 
-            button.textContent =
-                CONFIG.button.afrikaans;
+        setTimeout(function () {
 
-        }
+            if (currentLang === "af") {
 
-        button.addEventListener("click", function () {
+                setLanguage("af");
 
-            button.textContent =
+                text.textContent =
+                    CONFIG.button.afrikaans;
+
+            } else {
+
+                text.textContent =
+                    CONFIG.button.english;
+
+            }
+
+        }, 1500);
+
+        button.addEventListener("click", function (e) {
+
+            e.preventDefault();
+
+            text.textContent =
                 CONFIG.button.loading;
 
-            if (lang === "en") {
+            if (currentLang === "en") {
 
-                setLang("af", function () {
+                setLanguage("af", function () {
 
-                    lang = "af";
+                    currentLang = "af";
 
                     localStorage.setItem(
                         CONFIG.storageKey,
                         "af"
                     );
 
-                    button.textContent =
+                    text.textContent =
                         CONFIG.button.afrikaans;
 
                 });
@@ -316,43 +356,17 @@ function createHtml() {
 
     function start() {
 
-    injectStyles();
+        injectStyles();
 
-    createHtml();
+        createHtml();
 
-    loadGoogle();
-
-    const lang =
-        localStorage.getItem(CONFIG.storageKey) || "en";
-
-    setTimeout(function () {
-
-        const button =
-            document.getElementById(CONFIG.button.id);
-
-        if (!button)
-            return;
-
-        if (lang === "af") {
-
-            setLang("af");
-
-            button.textContent =
-                CONFIG.button.afrikaans;
-
-        } else {
-
-            button.textContent =
-                CONFIG.button.english;
-
-        }
+        loadGoogleTranslate();
 
         registerEvents();
 
-    }, 1500);
+    }
 
-}
-        // ==========================================
+    // ==========================================
     // BOOT
     // ==========================================
 

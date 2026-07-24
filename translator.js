@@ -402,8 +402,7 @@ body{
                                 "en"
                             );
 
-                            text.textContent =
-                                CONFIG.spanishButton.text;
+                            updateButtons("en");
 
                         });
 
@@ -416,8 +415,7 @@ body{
                                 "es"
                             );
 
-                            text.textContent =
-                                CONFIG.spanishButton.active;
+                            updateButtons("es");
 
                         });
 
@@ -465,8 +463,7 @@ body{
                         "en"
                     );
 
-                    text.textContent =
-                        CONFIG.afrikaansButton.text;
+                    updateButtons("en");
 
                 });
 
@@ -479,8 +476,7 @@ body{
                         "af"
                     );
 
-                    text.textContent =
-                        CONFIG.afrikaansButton.active;
+                     updateButtons("af");   
 
                 });
 
@@ -489,65 +485,48 @@ body{
         });
 
     }
-        // ==========================================
+    // ==========================================
+// UPDATE BUTTONS
+// ==========================================
+
+function updateButtons(lang) {
+
+    document
+        .querySelectorAll(".bs-spanish-text")
+        .forEach(function (text) {
+
+            text.textContent =
+                (lang === "es")
+                    ? CONFIG.spanishButton.active
+                    : CONFIG.spanishButton.text;
+
+        });
+
+    const afrikaansText =
+        document.getElementById(
+            "bs-afrikaans-text"
+        );
+
+    if (afrikaansText) {
+
+        afrikaansText.textContent =
+            (lang === "af")
+                ? CONFIG.afrikaansButton.active
+                : CONFIG.afrikaansButton.text;
+
+    }
+
+}
+    // ==========================================
     // RESTORE PREVIOUS LANGUAGE
     // ==========================================
 
     function restoreLanguage() {
 
-        let lang =
-            localStorage.getItem(CONFIG.storageKey);
+            // Always start with the page's original language.
+    // Do not automatically translate.
 
-        // First visit defaults to Afrikaans
-
-        if (!lang) {
-
-            lang =
-                CONFIG.defaultLanguage;
-
-            localStorage.setItem(
-                CONFIG.storageKey,
-                lang
-            );
-
-        }
-
-        setTimeout(function () {
-
-            if (lang === "es") {
-
-                setLanguage("es");
-
-                document
-                    .querySelectorAll(".bs-spanish-text")
-                    .forEach(function (text) {
-
-                        text.textContent =
-                            CONFIG.spanishButton.active;
-
-                    });
-
-            }
-
-            if (lang === "af") {
-
-                setLanguage("af");
-
-                const text =
-                    document.getElementById(
-                        "bs-afrikaans-text"
-                    );
-
-                if (text) {
-
-                    text.textContent =
-                        CONFIG.afrikaansButton.active;
-
-                }
-
-            }
-
-        }, 1500);
+    updateButtons("en");
 
     }
 

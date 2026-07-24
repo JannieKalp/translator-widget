@@ -518,36 +518,16 @@ function updateButtons(lang) {
 }
 
 
-    // ==========================================
+// ==========================================
 // RESTORE PREVIOUS LANGUAGE
 // ==========================================
 
 function restoreLanguage() {
 
-    let lang =
-        localStorage.getItem(CONFIG.storageKey);
+    // Always start with the page's original language.
+    // Do not automatically translate.
 
-    // First visit defaults to Afrikaans
-
-    if (!lang) {
-
-        lang =
-            CONFIG.defaultLanguage;
-
-        localStorage.setItem(
-            CONFIG.storageKey,
-            lang
-        );
-
-    }
-
-    setTimeout(function () {
-
-        setLanguage(lang);
-
-        updateButtons(lang);
-
-    }, 1500);
+    updateButtons("en");
 
 }
 

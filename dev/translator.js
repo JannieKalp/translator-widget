@@ -373,119 +373,118 @@ body{
     }
 
     // ==========================================
-// SPANISH BUTTON EVENTS
-// ==========================================
+    // SPANISH BUTTON EVENTS
+    // ==========================================
 
-function registerSpanishButtons() {
+    function registerSpanishButtons() {
 
-    document
-        .querySelectorAll(".bs-spanish-btn")
-        .forEach(function (button) {
+        document
+            .querySelectorAll(".bs-spanish-btn")
+            .forEach(function (button) {
 
-            const text =
-                button.querySelector(".bs-spanish-text");
+                const text =
+                    button.querySelector(".bs-spanish-text");
 
-            button.addEventListener("click", function () {
+                button.addEventListener("click", function () {
 
-                let lang =
-                    localStorage.getItem(CONFIG.storageKey);
+                    let lang =
+                        localStorage.getItem(CONFIG.storageKey);
 
-                text.textContent =
-                    "Switching...";
+                    text.textContent =
+                        "Switching...";
 
-                if (lang === "es") {
+                    if (lang === "es") {
 
-                    setLanguage("en", function () {
+                        setLanguage("en", function () {
 
-                        localStorage.setItem(
-                            CONFIG.storageKey,
-                            "en"
-                        );
+                            localStorage.setItem(
+                                CONFIG.storageKey,
+                                "en"
+                            );
 
-                        updateButtons("en");
+                            updateButtons("en");
 
-                    });
+                        });
 
-                } else {
+                    } else {
 
-                    setLanguage("es", function () {
+                        setLanguage("es", function () {
 
-                        localStorage.setItem(
-                            CONFIG.storageKey,
-                            "es"
-                        );
+                            localStorage.setItem(
+                                CONFIG.storageKey,
+                                "es"
+                            );
 
-                        updateButtons("es");
+                            updateButtons("es");
 
-                    });
+                        });
 
-                }
+                    }
+
+                });
 
             });
+
+    }
+
+    // ==========================================
+    // AFRIKAANS BUTTON EVENTS
+    // ==========================================
+
+    function registerAfrikaansButton() {
+
+        const button =
+            document.getElementById(
+                CONFIG.afrikaansButton.id
+            );
+
+        if (!button)
+            return;
+
+        const text =
+            document.getElementById(
+                "bs-afrikaans-text"
+            );
+
+        button.addEventListener("click", function () {
+
+            let lang =
+                localStorage.getItem(CONFIG.storageKey);
+
+            text.textContent =
+                "Switching...";
+
+            if (lang === "af") {
+
+                setLanguage("en", function () {
+
+                    localStorage.setItem(
+                        CONFIG.storageKey,
+                        "en"
+                    );
+
+                    updateButtons("en");
+
+                });
+
+            } else {
+
+                setLanguage("af", function () {
+
+                    localStorage.setItem(
+                        CONFIG.storageKey,
+                        "af"
+                    );
+
+                     updateButtons("af");   
+
+                });
+
+            }
 
         });
 
-}
-
-    // ==========================================
-// AFRIKAANS BUTTON EVENTS
-// ==========================================
-
-function registerAfrikaansButton() {
-
-    const button =
-        document.getElementById(
-            CONFIG.afrikaansButton.id
-        );
-
-    if (!button)
-        return;
-
-    const text =
-        document.getElementById(
-            "bs-afrikaans-text"
-        );
-
-    button.addEventListener("click", function () {
-
-        let lang =
-            localStorage.getItem(CONFIG.storageKey);
-
-        text.textContent =
-            "Switching...";
-
-        if (lang === "af") {
-
-            setLanguage("en", function () {
-
-                localStorage.setItem(
-                    CONFIG.storageKey,
-                    "en"
-                );
-
-                updateButtons("en");
-
-            });
-
-        } else {
-
-            setLanguage("af", function () {
-
-                localStorage.setItem(
-                    CONFIG.storageKey,
-                    "af"
-                );
-
-                updateButtons("af");
-
-            });
-
-        }
-
-    });
-
-}
-
+    }
     // ==========================================
 // UPDATE BUTTONS
 // ==========================================
@@ -504,7 +503,9 @@ function updateButtons(lang) {
         });
 
     const afrikaansText =
-        document.getElementById("bs-afrikaans-text");
+        document.getElementById(
+            "bs-afrikaans-text"
+        );
 
     if (afrikaansText) {
 
@@ -516,20 +517,18 @@ function updateButtons(lang) {
     }
 
 }
+    // ==========================================
+    // RESTORE PREVIOUS LANGUAGE
+    // ==========================================
 
+    function restoreLanguage() {
 
-// ==========================================
-// RESTORE PREVIOUS LANGUAGE
-// ==========================================
-
-function restoreLanguage() {
-
-    // Always start with the page's original language.
+            // Always start with the page's original language.
     // Do not automatically translate.
 
     updateButtons("en");
 
-}
+    }
 
     // ==========================================
     // START
